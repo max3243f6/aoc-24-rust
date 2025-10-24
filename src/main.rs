@@ -1,4 +1,5 @@
-fn main() {
-    println!("Hello, world!");
-}
+mod days;
 
+fn main() {
+    days::exec_day(1, 1);
+}
