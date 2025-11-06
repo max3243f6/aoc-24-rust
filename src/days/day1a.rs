@@ -1,34 +1,30 @@
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::fs;
 
+// Read input1.txt, parse to 2 integer lists, sort them, calculate absolute difference of each element and sum them up
 pub fn main() {
-    let reader = BufReader::new(
-        File::open("./data/input1.txt").expect("Something went wrong reading the file"),
-    );
-    let input_array: Vec<Vec<usize>> = reader
-        .lines()
-        // für jede zeile
-        .map(|line| {
-            line
-                .unwrap()
-                .split_whitespace()
-                //für jede nummer in der zeile
-                .map(|s| s.parse::<usize>().unwrap())
-                .collect::<Vec<usize>>()
-        })
-        .collect::<Vec<Vec<usize>>>();
+    let string = fs::read_to_string("./data/input1.txt").unwrap();
+    let lines = string.lines().collect::<Vec<&str>>();
+
     let mut list1: Vec<usize> = Vec::new();
     let mut list2: Vec<usize> = Vec::new();
-    for (i, line) in input_array.iter().enumerate() {
-        list1[i] = line[0];
-        list2[i] = line[1];
+
+    for line in lines {
+        let numbers = line
+            .split_whitespace()
+            .map(|entry| entry.parse().unwrap())
+            .collect::<Vec<usize>>();
+        list1.push(numbers[0]);
+        list2.push(numbers[1]);
     }
+
     list1.sort();
     list2.sort();
-    let mut result = 0;
-    for i in 0..list1.len() {
-        result += (list1[i] as isize - list2[i] as isize).abs();
-    }
+
+    let result: usize = list1
+        .iter()
+        .zip(list2)
+        .map(|tuple| tuple.0.abs_diff(tuple.1))
+        .sum();
 
     println!("{}", result);
 }
